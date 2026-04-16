@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;font-family:'Inter',-apple-system,sans-serif;overflow:hidden}
+
+.marquee-wrapper{
+  width:100%;
+  overflow:hidden;
+  padding:24px 0;
+  background:#fff;
+  position:relative;
+}
+
+.marquee-wrapper::before,
+.marquee-wrapper::after{
+  content:'';
+  position:absolute;
+  top:0;
+  width:120px;
+  height:100%;
+  z-index:2;
+  pointer-events:none;
+}
+.marquee-wrapper::before{
+  left:0;
+  background:linear-gradient(to right, #fff 0%, transparent 100%);
+}
+.marquee-wrapper::after{
+  right:0;
+  background:linear-gradient(to left, #fff 0%, transparent 100%);
+}
+
+.marquee-track{
+  display:flex;
+  width:max-content;
+  animation:scroll 35s linear infinite;
+  align-items:center;
+}
+
+.marquee-track:hover{
+  animation-play-state:paused;
+}
+
+@keyframes scroll{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+
+.logo-item{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 28px;
+  padding:10px 20px;
+  border:1px solid #E8E8E6;
+  border-radius:10px;
+  background:#F9F9F8;
+  height:60px;
+  min-width:120px;
+  transition:border-color 0.2s, background 0.2s;
+}
+
+.logo-item:hover{
+  border-color:#1B4F8A;
+  background:#EEF4FF;
+}
+
+.logo-item img{
+  height:28px;
+  width:auto;
+  max-width:110px;
+  object-fit:contain;
+  filter:grayscale(100%);
+  opacity:0.65;
+  transition:filter 0.2s, opacity 0.2s;
+}
+
+.logo-item:hover img{
+  filter:grayscale(0%);
+  opacity:1;
+}
+
+/* Fallback Text falls Logo nicht lädt */
+.logo-item .fallback{
+  font-size:13px;
+  font-weight:500;
+  color:#5F5E5A;
+  display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="marquee-wrapper">
+  <div class="marquee-track" id="track"></div>
+</div>
+
+<script>
+// Hier deine Firmen eintragen: Name + Domain
+var companies = [
+  {name: "Bosch",               domain: "bosch.com"},
+  {name: "Deutsche Bank",       domain: "db.com"},
+  {name: "McKinsey",            domain: "mckinsey.com"},
+  {name: "UNICEF",              domain: "unicef.org"},
+  {name: "Siemens",             domain: "siemens.com"},
+  {name: "SAP",                 domain: "sap.com"},
+  {name: "Zalando",             domain: "zalando.de"},
+  {name: "WWF",                 domain: "wwf.de"},
+  {name: "Deloitte",            domain: "deloitte.com"},
+  {name: "Caritas",             domain: "caritas.de"},
+];
+
+function buildItem(company) {
+  var div = document.createElement('div');
+  div.className = 'logo-item';
+  div.title = company.name;
+
+  var img = document.createElement('img');
+  img.src = 'https://logo.clearbit.com/' + company.domain;
+  img.alt = company.name;
+
+  // Fallback auf Text wenn Logo nicht lädt
+  var span = document.createElement('span');
+  span.className = 'fallback';
+  span.textContent = company.name;
+
+  img.onerror = function() {
+    this.style.display = 'none';
+    span.style.display = 'block';
+  };
+
+  div.appendChild(img);
+  div.appendChild(span);
+  return div;
+}
+
+var track = document.getElementById('track');
+
+// Erste Kopie
+companies.forEach(function(c) {
+  track.appendChild(buildItem(c));
+});
+
+// Zweite Kopie für nahtlosen Loop
+companies.forEach(function(c) {
+  track.appendChild(buildItem(c));
+});
+</script>
+
+</body>
+</html>
